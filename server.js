@@ -24,6 +24,12 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.get('/', function(req, res) {
+  res.json({
+    app: 'naloxone-app',
+    env: config.env
+  })
+})
 app.use('/alerts/', require('./src/routes/alerts')());
 app.listen(config.port, () => {
     console.log(`The server is running at http://localhost:${config.port}/`);
