@@ -1,13 +1,13 @@
-var config = require('../../config');
-var client = require('twilio')(config.twilioSID, config.twilioToken);
+let config = require('../../config');
+let client = require('twilio')(config.twilioSID, config.twilioToken);
 
-module.exports = function(to, message) {
+module.exports = function (to, message) {
   client.messages.create({
     body: message,
-    to: to,
-    from: config.twilioNumber
+    to,
+    from: config.twilioNumber,
     // mediaUrl: 'http://www.yourserver.com/someimage.png'
-  }, function(err, data) {
+  }, function (err, data) {
     if (err) {
       console.error('Could not notify administrator');
       console.error(err);

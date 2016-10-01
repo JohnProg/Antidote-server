@@ -1,7 +1,8 @@
 const express = require('express');
-const controller = require('../controllers/alertsController')
+const controller = require('../controllers/alertsController');
 const router = express.Router();
 module.exports = () => {
-    router.route('/').post(controller.sendAlert);
-    return router;
+  router.route('/').post(controller.sendAlert);
+  return router;
 }
+;

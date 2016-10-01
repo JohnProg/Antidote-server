@@ -1,10 +1,11 @@
-const twilio = require('twilio')
+const twilio = require('twilio');
 
 module.exports = () => {
-    var twiml = new twilio.TwimlResponse();
-    twiml.say("Thank you for calling the ET Phone Home Service - the " +
+  let twiml = new twilio.TwimlResponse();
+  twiml.say('Thank you for calling the ET Phone Home Service - the ' +
         "adventurous alien's first choice in intergalactic travel");
 
-    twiml.hangup();
-    return twiml;
+  twiml.hangup();
+  return twiml;
 }
+;
