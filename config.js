@@ -6,6 +6,8 @@ const config = {
   twilioToken: process.env.TWILIO_TOKEN || '',
   twilioNumber: process.env.TWILIO_NUMBER || '',
   sessionSecret: process.env.SESSION_SECRET || 'testing123',
+  AUTH0_ACCOUNT: process.env.AUTH0_ACCOUNT || '',
+  AUTH0_CLIENTID: process.env.AUTH0_CLIENTID || '',
 };
 
 module.exports = config;

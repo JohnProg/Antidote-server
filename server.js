@@ -10,7 +10,12 @@ const winston = require('winston');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const passportConfig = require('./src/passportConfig');
+const AuthenticationClient = require('auth0').AuthenticationClient;
+const auth0 = new AuthenticationClient({
+  domain: `${config.AUTH0_ACCOUNT}.auth0.com`,
+  clientId: config.AUTH0_CLIENTID,
+});
+
 const userController = require('./src/controllers/userController');
 mongoose.connect(config.db);
 const db = mongoose.connection;
@@ -30,6 +35,7 @@ const winstonLogger = new winston.Logger({
   exitOnError: false,
 });
 app.winston = winstonLogger;
+app.auth0 = auth0;
 //
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
@@ -64,10 +70,7 @@ app.get('/', function (req, res) {
   });
 });
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-}));
+app.post('/login', userController.postLogin);
 
 app.post('/users', userController.postSignup);
 app.use('/alerts/', require('./src/routes/alerts')());
