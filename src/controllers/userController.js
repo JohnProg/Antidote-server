@@ -5,12 +5,39 @@ exports.postLogin = (req, res) => {
     password: req.body.code,
   };
 
-  req.app.auth0.passwordless.signIn(data, (err) => {
+  req.app.auth0.passwordless.signIn(data, (err, response) => {
     if (err) {
-      console.log(err);
+      return res.json({
+        success: false,
+        error: err,
+      });
     }
-    res.json({
-      success: true,
+
+    const userData = {
+      phoneNumber: req.body.phoneNumber,
+      name: req.body.name,
+      licensePlate: req.body.licensePlate,
+      car: {
+        make: req.body.make,
+        model: req.body.model,
+        color: req.body.color,
+      },
+      available: req.body.available,
+      responding: false,
+    };
+    return User.create(userData)
+    .then((user) => {
+      res.json({
+        success: true,
+        access_token: response.access_token,
+        user,
+      });
+    })
+    .catch((error) => {
+      res.json({
+        success: false,
+        error,
+      });
     });
   });
 };
@@ -31,3 +58,28 @@ exports.postSignup = (req, res) => {
   });
 };
 
+// exports.updateUser = (req, res) => {
+//   const access_token = req.body.access_token;
+//   req.app.auth0.users.getInfo(access_token, function(result) {
+//     res.json(result);
+//   });
+// };
+
+exports.getUser = (req, res) => {
+  const accessToken = req.query.access_token;
+  req.app.auth0.users.getInfo(accessToken)
+  .then((result) => {
+    const parsed = JSON.parse(result);
+    User.findOne({
+      phoneNumber: parsed.phone_number
+    }, function(err, doc) {
+      if (err) {
+        return res.json({
+          success: false, 
+          err,
+        });
+      }
+      res.json(doc);
+    });
+  });
+};

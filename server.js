@@ -73,6 +73,8 @@ app.get('/', function (req, res) {
 app.post('/login', userController.postLogin);
 
 app.post('/users', userController.postSignup);
+app.get('/users', userController.getUser);
+app.post('/users', userController.postSignup);
 app.use('/alerts/', require('./src/routes/alerts')());
 app.listen(config.port, () => {
   console.log(`The server is running at http://localhost:${config.port}/`);
