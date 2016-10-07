@@ -10,6 +10,7 @@ const winston = require('winston');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const authenticate = require('./src/utils/authenticate')
 const AuthenticationClient = require('auth0').AuthenticationClient;
 const auth0 = new AuthenticationClient({
   domain: `${config.AUTH0_ACCOUNT}.auth0.com`,
@@ -71,10 +72,9 @@ app.get('/', function (req, res) {
 });
 
 app.post('/login', userController.postLogin);
-
 app.post('/users', userController.postSignup);
-app.get('/users', userController.getUser);
-app.post('/users', userController.postSignup);
+app.get('/users', authenticate, userController.getUser);
+app.post('/users/:id', authenticate, userController.updateUser);
 app.use('/alerts/', require('./src/routes/alerts')());
 app.listen(config.port, () => {
   console.log(`The server is running at http://localhost:${config.port}/`);

@@ -25,7 +25,7 @@ exports.postLogin = (req, res) => {
       available: req.body.available,
       responding: false,
     };
-    return User.create(userData)
+    return User.findOneAndUpdate({ phoneNumber: req.body.phoneNumber }, userData, { upsert: true })
     .then((user) => {
       res.json({
         success: true,
@@ -50,7 +50,10 @@ exports.postSignup = (req, res) => {
   };
   req.app.auth0.passwordless.sendSMS(data, (err) => {
     if (err) {
-      console.log(err);
+      res.json({
+        success: false,
+        error: err,
+      });
     }
     res.json({
       success: true,
@@ -58,28 +61,22 @@ exports.postSignup = (req, res) => {
   });
 };
 
-// exports.updateUser = (req, res) => {
-//   const access_token = req.body.access_token;
-//   req.app.auth0.users.getInfo(access_token, function(result) {
-//     res.json(result);
-//   });
-// };
+exports.updateUser = (req, res) => {
+  if (`+${req.params.id}` !== req.user.phoneNumber) {
+    res.json({
+      success: false,
+      error: 'you are updating the wrong user',
+    });
+  }
+  return User.findOneAndUpdate({ phoneNumber: req.user.phoneNumber }, req.body, { new: true, upsert: true })
+    .then((user) => {
+      res.json({
+        success: true,
+        user,
+      });
+    });
+};
 
 exports.getUser = (req, res) => {
-  const accessToken = req.query.accessToken;
-  req.app.auth0.users.getInfo(accessToken)
-  .then((result) => {
-    const parsed = JSON.parse(result);
-    User.findOne({
-      phoneNumber: parsed.phone_number
-    }, function(err, doc) {
-      if (err) {
-        return res.json({
-          success: false, 
-          err,
-        });
-      }
-      res.json(doc);
-    });
-  });
+  res.json(req.user);
 };
