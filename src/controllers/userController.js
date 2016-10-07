@@ -66,7 +66,7 @@ exports.postSignup = (req, res) => {
 // };
 
 exports.getUser = (req, res) => {
-  const accessToken = req.query.access_token;
+  const accessToken = req.query.accessToken;
   req.app.auth0.users.getInfo(accessToken)
   .then((result) => {
     const parsed = JSON.parse(result);
