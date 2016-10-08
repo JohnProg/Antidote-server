@@ -2,7 +2,7 @@ const User = require('../models/user');
 exports.postLogin = (req, res) => {
   const data = {
     username: req.body.phoneNumber,
-    password: req.body.code,
+    password: req.body.verificationCode,
   };
 
   req.app.auth0.passwordless.signIn(data, (err, response) => {
@@ -50,12 +50,12 @@ exports.postSignup = (req, res) => {
   };
   req.app.auth0.passwordless.sendSMS(data, (err) => {
     if (err) {
-      res.json({
+      return res.status(400).json({
         success: false,
         error: err,
       });
     }
-    res.json({
+    return res.json({
       success: true,
     });
   });
