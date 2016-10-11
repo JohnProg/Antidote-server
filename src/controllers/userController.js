@@ -9,21 +9,17 @@ exports.handleLoginRequest = (userData, res, response) => {
 };
 
 exports.postLogin = (req, res) => {
-  const data = {
-    username: req.body.phoneNumber,
-    password: req.body.verificationCode,
-  };
-
-  req.app.auth0.passwordless.signIn(data, (error, response) => {
-    const { phoneNumber, name, licensePlate, make, model, color, available } = req.body
-    if (error) return res.json({ success: false, error});
+  const { phoneNumber, name, licensePlate, make, model, color, available } = req.body
+  const {signIn} = req.app.auth0.passwordless
+  signIn({}, (error, response) => {
+    if (error) return res.json({ error, success: false });
     const userData = { 
       phoneNumber, 
       name, 
       licensePlate, 
       available,
-      car: { make, model, color },
       responding: false,
+      car: { make, model, color },
     };
     return handleLoginRequest(userData, res, response)
   });
