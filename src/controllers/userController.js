@@ -9,9 +9,11 @@ exports.handleLoginRequest = (userData, res, response) => {
 };
 
 exports.postLogin = (req, res) => {
-  const { phoneNumber, name, licensePlate, make, model, color, available } = req.body
-  const {signIn} = req.app.auth0.passwordless
-  signIn({}, (error, response) => {
+  const { phoneNumber, name, licensePlate, make, model, color, available, verificationCode } = req.body
+  const {signIn} = req.app.auth0.passwordless		
+  const data = { username: phoneNumber, password: verificationCode };
+
+  signIn(data, (error, response) => {
     if (error) return res.json({ error, success: false });
     const userData = { 
       phoneNumber, 
