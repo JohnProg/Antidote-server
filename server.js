@@ -10,7 +10,7 @@ const winston = require('winston');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const authenticate = require('./src/utils/authenticate')
+const authenticate = require('./src/utils/authenticate');
 const AuthenticationClient = require('auth0').AuthenticationClient;
 const auth0 = new AuthenticationClient({
   domain: `${config.AUTH0_ACCOUNT}.auth0.com`,
@@ -20,8 +20,8 @@ const auth0 = new AuthenticationClient({
 const userController = require('./src/controllers/userController');
 mongoose.connect(config.db);
 const db = mongoose.connection;
-db.on('error', function () {
-  throw new Error('unable to connect to database at ' + config.db);
+db.on('error', () => {
+  throw new Error(`unable to connect to database at ${config.db}`);
 });
 const app = express();
 const winstonLogger = new winston.Logger({
@@ -64,7 +64,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   res.json({
     app: 'naloxone-app',
     env: config.env,

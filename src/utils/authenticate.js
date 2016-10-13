@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
   .then((result) => {
     const parsed = JSON.parse(result);
     User.findOne({
-      phoneNumber: parsed.phone_number
+      phoneNumber: parsed.phone_number,
     }, (err, doc) => {
       if (err) {
         return res.json({
@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
         });
       }
       req.user = doc;
-      next();
+      return next();
     });
   });
 };

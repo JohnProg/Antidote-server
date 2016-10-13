@@ -34,7 +34,7 @@ exports.createAlert = (req, res) => {
     /**
      * this is where we would trigger our events to be sent out 
     **/ 
-    console.error('users', users);
+    // console.error('users', users);
     res.json(result);
   })
   .catch((error) => {
