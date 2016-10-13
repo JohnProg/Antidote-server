@@ -29,7 +29,7 @@
     "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "mocha ",
+    "test": "mocha $(find  . -name '*.spec.js')",
     "start": "node server.js"
   },
   "repository": {
