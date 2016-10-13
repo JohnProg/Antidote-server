@@ -1,46 +1,33 @@
 const User = require('../models/user');
+
+exports.handleLoginRequest = (userData, res, response) => {
+  const { access_token } = response
+  const { phoneNumber } = userData
+  return User.findOneAndUpdate({ phoneNumber }, userData, { upsert: true })
+    .then(user => res.json({ user, access_token, success: true }))
+    .catch(error => res.json({ error, success: false }))
+};
+
 exports.postLogin = (req, res) => {
-  const data = {
-    username: req.body.phoneNumber,
-    password: req.body.verificationCode,
-  };
+  const { phoneNumber, name, licensePlate, make, model, color, available, verificationCode } = req.body
+  const {signIn} = req.app.auth0.passwordless		
+  const data = { username: phoneNumber, password: verificationCode };
 
-  req.app.auth0.passwordless.signIn(data, (err, response) => {
-    if (err) {
-      return res.json({
-        success: false,
-        error: err,
-      });
-    }
-
-    const userData = {
-      phoneNumber: req.body.phoneNumber,
-      name: req.body.name,
-      licensePlate: req.body.licensePlate,
-      car: {
-        make: req.body.make,
-        model: req.body.model,
-        color: req.body.color,
-      },
-      available: req.body.available,
+  signIn(data, (error, response) => {
+    if (error) return res.json({ error, success: false });
+    const userData = { 
+      phoneNumber, 
+      name, 
+      licensePlate, 
+      available,
       responding: false,
+      car: { make, model, color },
     };
-    return User.findOneAndUpdate({ phoneNumber: req.body.phoneNumber }, userData, { upsert: true })
-    .then((user) => {
-      res.json({
-        success: true,
-        access_token: response.access_token,
-        user,
-      });
-    })
-    .catch((error) => {
-      res.json({
-        success: false,
-        error,
-      });
-    });
+    return handleLoginRequest(userData, res, response)
   });
 };
+
+
 exports.logout = (req, res) => {
 
 };
