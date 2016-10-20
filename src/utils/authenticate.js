@@ -7,8 +7,6 @@ module.exports = (req, res, next) => {
     User.findOne({
       phoneNumber: parsed.phone_number,
     }, (err, doc) => {
-      console.error('err', err);
-      console.error('doc', doc);
       if (err) {
         return res.json({
           success: false,
