@@ -9,7 +9,7 @@ const handleLoginRequest = exports.handleLoginRequest = (userData, res, response
 };
 
 exports.postLogin = (req, res) => {
-  const { phoneNumber, name, licensePlate, make, model, color, available, verificationCode, location } = req.body;
+  const { phoneNumber, name, licensePlate, make, model, color, available, verificationCode } = req.body;
   const data = { username: phoneNumber, password: verificationCode };
 
   req.app.auth0.passwordless.signIn(data, (error, response) => {
@@ -21,7 +21,6 @@ exports.postLogin = (req, res) => {
       available,
       responding: false,
       car: { make, model, color },
-      location,
     };
     return handleLoginRequest(userData, res, response);
   });
