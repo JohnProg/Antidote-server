@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "6.x"
+  },
   "dependencies": {
     "auth0": "^2.4.0",
     "bcrypt-nodejs": "0.0.3",
