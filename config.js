@@ -8,6 +8,7 @@ const config = {
   sessionSecret: process.env.SESSION_SECRET || 'testing123',
   AUTH0_ACCOUNT: process.env.AUTH0_ACCOUNT || '',
   AUTH0_CLIENTID: process.env.AUTH0_CLIENTID || '',
+  GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY || '',
 };
 
 module.exports = config;

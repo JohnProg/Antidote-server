@@ -1,6 +1,8 @@
 // const sendTextMessage = require('../utils/sendTextMessage');
 const User = require('../models/user');
 const Alert = require('../models/alerts');
+const config = require('../../config');
+const geocoder = require('geocoder');
 const sendAlert = (location, alert) => {
   console.error(location);
   return User.find({
@@ -43,4 +45,28 @@ exports.createAlert = (req, res) => {
       error,
     });
   });
+};
+
+
+exports.geocode = (req, res) => {
+  const apiKey = {
+    apiKey: config.GOOGLE_MAPS_API_KEY,
+  };
+
+  geocoder.reverseGeocode(req.body.lat, req.body.long, (error, data) => {
+    if (error) {
+      return res.status(400).json({ error, success: false });
+    }
+    if (data && data.results && data.results[0] && data.results[0].formatted_address) {
+      return res.json({
+        success: true,
+        address: data.results[0].formatted_address,
+      });
+    }
+
+    return res.status(404).json({
+      success: false,
+      address: 'none',
+    });
+  }, apiKey);
 };

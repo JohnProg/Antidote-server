@@ -4,5 +4,6 @@ const router = express.Router();
 
 module.exports = () => {
   router.route('/').post(controller.createAlert);
+  router.route('/geocode').post(controller.geocode);
   return router;
 };
