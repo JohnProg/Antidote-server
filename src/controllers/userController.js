@@ -48,7 +48,7 @@ exports.postSignup = (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-  if (`+1${req.params.id}` !== `${req.body.phoneNumber}`) {
+  if (req.params.id !== req.body.phoneNumber) {
     res.json({
       success: false,
       error: 'you are updating the wrong user',

@@ -75,6 +75,7 @@ app.post('/login', userController.postLogin);
 app.post('/users', userController.postSignup);
 app.get('/users', authenticate, userController.getUser);
 app.put('/users/:id', authenticate, userController.updateUser);
+app.post('/users/:id', authenticate, userController.updateUser);
 app.use('/alerts/', require('./src/routes/alerts')());
 app.listen(config.port, () => {
   console.log(`The server is running at http://localhost:${config.port}/`);
