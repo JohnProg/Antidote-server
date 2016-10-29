@@ -55,6 +55,10 @@ exports.updateUser = (req, res) => {
     });
   }
   const { phoneNumber, name, licensePlate, car, available, location } = req.body;
+  let updatedLocation = location;
+  if (!location) {
+    updatedLocation = [0, 0];
+  }
   const doc = {
     phoneNumber,
     name,
@@ -62,15 +66,16 @@ exports.updateUser = (req, res) => {
     available,
     responding: false,
     car,
-    location,
+    updatedLocation,
   };
-  return User.findOneAndUpdate({ phoneNumber: req.body.phoneNumber }, doc, { new: true, upsert: true })
+  User.findOneAndUpdate({ phoneNumber: req.body.phoneNumber }, doc, { new: true, upsert: true })
     .then((user) => {
       res.json({
         success: true,
         user,
       });
-    });
+    })
+    .catch(error => res.json({ error, success: false }));
 };
 
 exports.getUser = (req, res) => {
