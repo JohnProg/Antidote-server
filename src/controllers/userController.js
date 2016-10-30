@@ -70,10 +70,10 @@ exports.updateUser = (req, res) => {
   };
   User.findOneAndUpdate({ phoneNumber: req.body.phoneNumber }, doc, { new: true, upsert: true })
     .then((user) => {
-      const updatedUser = Object.assign(user, {token});
+      const updatedUser = Object.assign(user, { token });
       res.json({
         success: true,
-        updatedUser,
+        user: updatedUser,
       });
     })
     .catch(error => res.json({ error, success: false }));
