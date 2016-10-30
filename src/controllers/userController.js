@@ -8,6 +8,22 @@ const handleLoginRequest = exports.handleLoginRequest = (userData, res, response
     .catch(error => res.json({ error, success: false }));
 };
 
+
+exports.getUser = (req, res) => {
+  const phoneNumber = req.params.id;
+  User.findOne({
+      phoneNumber,
+    }, (err, doc) => {
+      if (err) {
+        return res.json({
+          success: false,
+          err,
+        });
+      }
+      return res.json(doc);
+    });
+};
+
 exports.postLogin = (req, res) => {
   const { phoneNumber, name, licensePlate, make, model, color, available, verificationCode } = req.body;
   const data = { username: phoneNumber, password: verificationCode };
@@ -66,7 +82,7 @@ exports.updateUser = (req, res) => {
     available,
     responding: false,
     car,
-    updatedLocation,
+    location: updatedLocation,
   };
   User.findOneAndUpdate({ phoneNumber: req.body.phoneNumber }, doc, { new: true, upsert: true })
     .then((user) => {
