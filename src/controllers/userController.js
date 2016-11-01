@@ -4,7 +4,10 @@ const handleLoginRequest = exports.handleLoginRequest = (userData, res, response
   const { access_token } = response;
   const { phoneNumber } = userData;
   return User.findOneAndUpdate({ phoneNumber }, userData, { upsert: true })
-    .then(user => res.json({ user, access_token, success: true }))
+    .then(user => {
+      const updatedUser = Object.assign(user.toJSON(), { token: access_token });
+      res.json({ user: updatedUser, access_token, success: true })
+    })
     .catch(error => res.json({ error, success: false }));
 };
 
