@@ -74,6 +74,7 @@ app.get('/', (req, res) => {
 app.post('/login', userController.postLogin);
 app.post('/users', userController.postSignup);
 app.get('/users', authenticate, userController.getUser);
+app.get('/users/:id', userController.getUser);
 app.put('/users/:id', authenticate, userController.updateUser);
 app.post('/users/:id', authenticate, userController.updateUser);
 app.use('/alerts/', require('./src/routes/alerts')());
