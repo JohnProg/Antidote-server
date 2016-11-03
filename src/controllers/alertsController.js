@@ -4,13 +4,13 @@ const Alert = require('../models/alerts');
 const config = require('../../config');
 const geocoder = require('geocoder');
 const sendAlert = require('../utils/sendAlert')
-const getAvailableUsers = (location, alert) => {
+const getAvailableUsers = (location) => {
   return User.find({
     location: {
       '$near': {
-        $geometry: { type: 'Point', coordinates: location },
-        $minDistance: 0,
-        $maxDistance: 5000,
+        '$geometry': { type: 'Point', coordinates: location },
+        '$minDistance': 0,
+        '$maxDistance': 50000,
       },
     },
     available: true,
@@ -21,7 +21,7 @@ const getAvailableUsers = (location, alert) => {
 exports.createAlert = (req, res) => {
   const alertData = {
     name: req.body.name,
-    location: [req.body.long, req.body.lat],
+    location: [ req.body.lat, req.body.long],
     geocoded: req.body.geocoded,
     phoneNumber: req.body.phoneNumber,
     resolved: false,
@@ -29,21 +29,28 @@ exports.createAlert = (req, res) => {
   let result;
   Alert.create(alertData)
   .then((doc) => {
-    result = doc;
-    return getAvailableUsers(doc.location, doc);
+    result = doc.toJSON();
+    return getAvailableUsers(result.location);
   })
   .then((users) => {
+    if (users.length === 0) {
+      result = 'no users found'
+      return true;
+    }
     /**
      * this is where we would trigger our events to be sent out
     **/
-   
+    result.users = users;
     const promises = users.map((user) => {
       return sendAlert(user, result);
     });
     return Promise.all(promises);
   })
   .then(() => {
-
+    res.json({
+      success: true,
+      result,
+    });
   })
   .catch((error) => {
     res.json({
