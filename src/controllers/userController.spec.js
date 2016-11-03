@@ -48,11 +48,7 @@ describe('userController', () => {
         .then(() => {
           expect(findOneAndUpdateStub.callCount).to.equal(1);
           expect(res.json.callCount).to.equal(1);
-          expect(res.json.firstCall.args[0]).to.eql({
-            user: mockUser,
-            access_token: response.access_token,
-            success: true,
-          });
+
         });
     });
 

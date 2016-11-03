@@ -3,8 +3,8 @@ const User = require('../models/user');
 const Alert = require('../models/alerts');
 const config = require('../../config');
 const geocoder = require('geocoder');
-const sendAlert = (location, alert) => {
-  console.error(location);
+const sendAlert = require('../utils/sendAlert')
+const getAvailableUsers = (location, alert) => {
   return User.find({
     location: {
       '$near': {
@@ -30,14 +30,20 @@ exports.createAlert = (req, res) => {
   Alert.create(alertData)
   .then((doc) => {
     result = doc;
-    return sendAlert(doc.location, doc);
+    return getAvailableUsers(doc.location, doc);
   })
   .then((users) => {
     /**
-     * this is where we would trigger our events to be sent out 
-    **/ 
-    // console.error('users', users);
-    res.json(result);
+     * this is where we would trigger our events to be sent out
+    **/
+   
+    const promises = users.map((user) => {
+      return sendAlert(user, result);
+    });
+    return Promise.all(promises);
+  })
+  .then(() => {
+
   })
   .catch((error) => {
     res.json({
