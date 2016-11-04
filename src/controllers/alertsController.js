@@ -18,6 +18,33 @@ const getAvailableUsers = (location) => {
   });
 };
 
+exports.getAlert = (req, res) => {
+    Alert.findById(req.params.id)
+     .then((doc) => {
+      res.json({
+        success: true,
+        data: doc.toJSON(),
+      });
+    });
+};
+
+exports.updateAlert = (req,res) => {
+    const alertData = {
+      name: req.body.name,
+      location: req.body.location,
+      geocoded: req.body.geocoded,
+      phoneNumber: req.body.phoneNumber,
+      resolved: req.body.resolved,
+    };
+  Alert.create(alertData)
+  .then((doc) => {
+    res.json({
+      success: true,
+      data: doc.toJSON(),
+    });
+  })
+}
+
 exports.createAlert = (req, res) => {
   const alertData = {
     name: req.body.name,
