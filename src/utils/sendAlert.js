@@ -4,7 +4,7 @@ const client = require('twilio')(config.twilioSID, config.twilioToken);
 module.exports = (user, alert) => {
   return new Promise((resolve, reject) => {
     client.messages.create({
-      body: 'Someone needs your help',
+      body: `Someone needs your help click: antidote://alerts/${alert._id}`,
       to: user.phoneNumber,
       from: config.twilioNumber,
       // mediaUrl: 'http://www.yourserver.com/someimage.png'
